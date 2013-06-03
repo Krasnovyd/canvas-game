@@ -43,9 +43,10 @@ var toLeft = false, toRight = false, toTop = false, toBottom = false;
 var PANZER = function(positionImg, x, y){
 	this.x = x;
 	this.y = y;
-	this.width = 32, 
-    this.height = 32, 
-    this.frames = 7,
+	this.width = 32;
+    this.height = 32; 
+    this.frames = 7;
+    this.speed = 2;
     this.positionImg = positionImg;
     this.currentFrame = 0;
 }
@@ -59,8 +60,8 @@ function init(){
     ctx = canvas.getContext("2d");
     image = new Image() 
     image.src = 'img/MulticolorTanks1.png';
-    //panzer = new PANZER(32, 0, 0); //diff image +32
-    panzer1 = new PANZER(0, 64, 400);
+    //panzer1 = new PANZER(32, 0, 0); //diff image +32
+    panzer = new PANZER(0, 64, 400);
 
     beginGame();
 }
@@ -82,8 +83,8 @@ document.addEventListener("keydown", function(event){
 		toRight = false;
 		toTop = false;
 		toBottom = false;
-		panzer1.currentFrame = 0;
-		panzer1.frames = 7;
+		panzer.currentFrame = 0;
+		panzer.frames = 7;
 	} else if(event.keyCode == 38){
 		if(toTop === true){
 			return;
@@ -92,8 +93,8 @@ document.addEventListener("keydown", function(event){
 		toRight = false;
 		toTop = true;
 		toBottom = false;
-		panzer1.currentFrame = 7;
-		panzer1.frames = 15;
+		panzer.currentFrame = 7;
+		panzer.frames = 15;
 	} else if(event.keyCode == 39){
 		if(toRight === true){
 			return;
@@ -102,8 +103,8 @@ document.addEventListener("keydown", function(event){
 		toRight = true;
 		toTop = false;
 		toBottom = false;
-		panzer1.currentFrame = 15;
-		panzer1.frames = 23;
+		panzer.currentFrame = 15;
+		panzer.frames = 23;
 	} else if(event.keyCode == 40){
 		if(toBottom === true){
 			return;
@@ -112,35 +113,46 @@ document.addEventListener("keydown", function(event){
 		toRight = false;
 		toTop = false;
 		toBottom = true;
-		panzer1.currentFrame = 23;
-		panzer1.frames = 31;
+		panzer.currentFrame = 23;
+		panzer.frames = 31;
 	}
 });
 
 var draw = function(panzer){
+	if(panzer.x + panzer.width == w){
+		toRight = false;
+	} else if(panzer.x == 0){
+		toLeft = false;
+	} else if(panzer.y == 0){
+		toTop = false;
+	} else if(panzer.y == h){
+		toBottom = false;
+	}
+
+
 	if(toLeft){
-		panzer1.x -= 2;
+		panzer.x -= panzer.speed;
 		if (panzer.currentFrame == panzer.frames) { 
 	        panzer.currentFrame = 0; 
 	    } else { 
 	        panzer.currentFrame++; 
 	    }
 	} else if(toTop){
-		panzer1.y -= 2;
+		panzer.y -= panzer.speed;
 		if (panzer.currentFrame == panzer.frames) { 
 	        panzer.currentFrame = 8; 
 	    } else { 
 	        panzer.currentFrame++; 
 	    }
 	} else if(toRight){
-		panzer1.x += 2;
+		panzer.x += panzer.speed;
 		if (panzer.currentFrame == panzer.frames) { 
 	        panzer.currentFrame = 16; 
 	    } else { 
 	        panzer.currentFrame++; 
 	    }
 	} else if(toBottom){
-		panzer1.y += 2;
+		panzer.y += panzer.speed;
 		if (panzer.currentFrame == panzer.frames) { 
 	        panzer.currentFrame = 24; 
 	    } else { 
@@ -150,7 +162,7 @@ var draw = function(panzer){
 
 
 	ctx.clearRect(panzer.x, panzer.y, panzer.width+2, panzer.height+2);
-		ctx.fillStyle = "red";
+		ctx.fillStyle = "silver";
 		ctx.beginPath();
 		ctx.arc(200,200,450,0,2*Math.PI,true)
 		ctx.closePath();
@@ -159,6 +171,6 @@ var draw = function(panzer){
 }
 
 setInterval(function(){
-	//draw(panzer);
-	draw(panzer1);
+	//draw(panzer1);
+	draw(panzer);
 }, 50);
